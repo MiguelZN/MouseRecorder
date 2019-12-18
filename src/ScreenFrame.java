@@ -1,34 +1,54 @@
+import java.awt.BorderLayout;
+import java.awt.Container;
 import java.awt.Dimension;
 
 import javax.swing.*;
 
+/*Super class reference, subclass behavior*/
 public class ScreenFrame extends JFrame{
-	private int width, height;
+	final int SCREEN_WIDTH = 1000;
+	final int SCREEN_HEIGHT = 800;
+	final static String TITLE = "Mouse Recorder by Miguel Zavala";
 	
-	public ScreenFrame(String title, int width, int height) {
-		super(title);
-		this.width = width;
-		this.height = height;
-		this.setSize(new Dimension(width, height));
+	private Dimension d; //Size of the JFrame
+	
+	/*Screens:*/
+	RecorderScreen rc;
+	
+	
+	public ScreenFrame() {
+		super(TITLE);
+		this.initial(); //JFrame initial settings
+		this.RecorderScreenInitial(); //RecorderSceen intial settings
+		
 		this.setVisible(true);
+		this.validate();
+	}
+	
+	public void initial() {
+		this.setSize(new Dimension(SCREEN_WIDTH,SCREEN_HEIGHT));
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.d = new Dimension(SCREEN_WIDTH,SCREEN_HEIGHT);
+	}
+	
+	/*Sets up the RecorderScreen such as adding it to the JFrame etc*/
+	public void RecorderScreenInitial() {
+		rc = new RecorderScreen(d,new PropDim(1,1));
+		
+		Container cntr = this.getContentPane();
+		BorderLayout bl = new BorderLayout();
+		cntr.setLayout(bl);
+		cntr.add(rc, BorderLayout.PAGE_START);
+		
 	}
 
 	public int getWidth() {
-		return width;
-	}
-
-	public void setWidth(int width) {
-		this.width = width;
+		return this.SCREEN_WIDTH;
 	}
 
 	public int getHeight() {
-		return height;
+		return this.SCREEN_HEIGHT;
 	}
 
-	public void setHeight(int height) {
-		this.height = height;
-	}
-	
 	
 }
