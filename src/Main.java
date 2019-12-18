@@ -5,8 +5,5 @@ public class Main {
 		//System.out.println("Hello");
 		
 		ScreenFrame MouseRecorder = new ScreenFrame();
-		
-		//Dimension d = PropDim.calcDimension(new Dimension(500,500), new PropDim(.5,.5));
-		//System.out.println(d);
 	}
 }

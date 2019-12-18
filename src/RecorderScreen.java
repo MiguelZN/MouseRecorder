@@ -16,8 +16,8 @@ public class RecorderScreen extends InnerPanel{
 		super(parent_d, pd);
 		System.out.println("RS:"+this.getDimension());
 		
-		MouseRecorderSection = new MouseRecorderSection(this.getDimension(),new PropDim(.3,1));
-		MouseIntervalSection = new MouseIntervalClickerSection(this.getDimension(),new PropDim(.3,1));
+		MouseRecorderSection = new MouseRecorderSection(this.getDimension());
+		MouseIntervalSection = new MouseIntervalClickerSection(this.getDimension());
 		BorderLayout bl = new BorderLayout();
 		
 		this.setLayout(bl);

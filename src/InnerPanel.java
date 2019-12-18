@@ -6,8 +6,9 @@ import javax.swing.JPanel;
 public abstract class InnerPanel extends JPanel{
 	private Dimension parent_d; //Size of parent JPanel/JFrame
 	private Dimension d; //Size of current JPanel
+	private PropDim proportions; //proportion in respect to parent container size
 	
-	private PropDim proportions;
+
 	
 	public InnerPanel(Dimension parent_d, PropDim proportions) {
 		super();
