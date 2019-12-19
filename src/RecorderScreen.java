@@ -29,6 +29,18 @@ public class RecorderScreen extends InnerPanel{
 		
 		
 	}
+	
+	
+
+	public MouseIntervalClickerSection getMouseIntervalSection() {
+		return MouseIntervalSection;
+	}
+
+	public MouseRecorderSection getMouseRecorderSection() {
+		return MouseRecorderSection;
+	}
+
+
 
 	@Override
 	public void Show() {

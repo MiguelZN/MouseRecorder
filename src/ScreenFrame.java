@@ -15,7 +15,8 @@ public class ScreenFrame extends JFrame{
 	private Dimension d; //Size of the JFrame
 	
 	/*Screens:*/
-	RecorderScreen rc;
+	RecorderScreen MainScreen;
+	
 	
 	
 	public ScreenFrame() {
@@ -35,13 +36,19 @@ public class ScreenFrame extends JFrame{
 	
 	/*Sets up the RecorderScreen such as adding it to the JFrame etc*/
 	public void RecorderScreenInitial() {
-		rc = new RecorderScreen(d,new PropDim(1,1));
-		
+		MainScreen = new RecorderScreen(d,new PropDim(1,1));
 		Container cntr = this.getContentPane();
 		BorderLayout bl = new BorderLayout();
 		cntr.setLayout(bl);
-		cntr.add(rc, BorderLayout.PAGE_START);
+		cntr.add(MainScreen, BorderLayout.PAGE_START);
 		
+	}
+	
+	
+	
+
+	public RecorderScreen getMainScreen() {
+		return MainScreen;
 	}
 
 	public int getWidth() {

@@ -1,13 +1,18 @@
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.LayoutManager;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
+import java.util.Timer;
 
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
@@ -25,6 +30,17 @@ import javax.swing.border.Border;
 public class MouseIntervalClickerSection extends InnerPanel{
 	private static PropDim proportions = new PropDim(.5,1);
 	
+	/*Mouse Detection, Mouse Position*/
+	GlassFrame TransparentFrame;
+	
+	public enum CLICKTYPE{
+		LEFTCLICK,RIGHTCLICK;
+	}
+	
+	public enum TIMETYPE{
+		MS, SECONDS, MINUTES, HOURS;
+	}
+	
 	/*SettingsRegionMouseInterval fields*/
 	private ArrayList<JComponent> all_components;
 	private GridBagLayout gbl;
@@ -37,26 +53,30 @@ public class MouseIntervalClickerSection extends InnerPanel{
 	//First Row: Select Click Type 1)Left Click, 2)Right Click
 		private JLabel ClickTypeLabel;
 		private JComboBox ClickTypeCB;
-		final String[] ClickTypeCBOptions = {"Left Click", "Right Click"};
+		final CLICKTYPE[] ClickTypeCBOptions = {CLICKTYPE.LEFTCLICK,CLICKTYPE.RIGHTCLICK};
 	
 	//Second Row: Select Interval Speed: 
 		private JLabel IntervalSpeedLabel;
 		private JTextField IntervalSpeedTextField;
 		private JComboBox IntervalSpeedCB;
-		final String[] IntervalSpeedCBOptions = {"ms","seconds","minutes","hours"};
+		final TIMETYPE[] IntervalSpeedCBOptions = {TIMETYPE.MS, TIMETYPE.SECONDS, TIMETYPE.MINUTES, TIMETYPE.HOURS};
 		
 	//Third Row:
 		private JCheckBox IntervalSpeedRandomDelayCheckBox;
 		private JLabel IntervalSpeedRandomDelayLabel;
 		private JTextField IntervalSpeedRandomDelayTextField;
 		private JComboBox IntervalSpeedRandomDelayCB;
-		final String[] IntervalSpeedRandomDelayCBOptions = {"ms","seconds","minutes","hours"};
+		final TIMETYPE[] IntervalSpeedRandomDelayCBOptions = {TIMETYPE.MS, TIMETYPE.SECONDS, TIMETYPE.MINUTES, TIMETYPE.HOURS};
 		
 	//Fourth Row: Select click region or click where the mouse is currently at
 		private JLabel selectRegionLabel;
 		private ButtonGroup selectRegionOrClickInPlace;
 		private JRadioButton selectRegionRadioButton;
 		private JRadioButton ClickInPlaceRadioButton;
+		
+		public enum MOUSEMODE{
+			SELECTION, INPLACE;
+		}
 		
 		private JButton StartButton;
 	
@@ -66,6 +86,8 @@ public class MouseIntervalClickerSection extends InnerPanel{
 	private final PropDim JENTRY_PROP = new PropDim(.3,.05);
 	private final PropDim JTEXTFIELD_PROP = new PropDim(.15,.05);
 	private final PropDim JCOMBOBOX_PROP = new PropDim(.3,.05);
+	
+	
 	
 	
 	/*Constructor*/
@@ -174,19 +196,11 @@ public class MouseIntervalClickerSection extends InnerPanel{
 			this.add(InnerPanel.createRow(this.getDimension(),true));
 			
 			//Fourth Row: Select Click Region (Rectangle Area)---------
-			/*
-			 * private JLabel selectRegionLabel;
-			private JButton SelectRegion;
-			private ButtonGroup selectRegionOrClickInPlace;
-			private JRadioButton selectRegionRadioButton;
-			private JRadioButton ClickInPlaceRadioButton;
-			 */
-			
 			selectRegionLabel = new JLabel("Mouse Mode:");
 			
 			selectRegionOrClickInPlace = new ButtonGroup();
-			selectRegionRadioButton = new JRadioButton("Select Region");
-			ClickInPlaceRadioButton = new JRadioButton("ClickInPlace");
+			selectRegionRadioButton = new JRadioButton(MOUSEMODE.SELECTION.toString());
+			ClickInPlaceRadioButton = new JRadioButton(MOUSEMODE.INPLACE.toString());
 			StartButton = new JButton("Start");
 
 			
@@ -201,17 +215,111 @@ public class MouseIntervalClickerSection extends InnerPanel{
 			this.add(StartButton);
 			
 			
+			
 			/*Action Listeners*/
+			
+			/*Start Button should:
+			 * 1) Get values of ALL different JComponents
+			 * 2) Should error check to make sure the user typed in something for required fields
+			 * 3) 
+			 */
 			StartButton.addActionListener(new ActionListener() {
 
 				@Override
 				public void actionPerformed(ActionEvent e) {
+					//Retrieving all the input from the JComponents:
+					String ClickTypeValue = ClickTypeCB.getSelectedItem().toString();
+					String IntervalSpeedInput = IntervalSpeedTextField.getText();
+					String IntervalSpeedCBTimeSelection = IntervalSpeedCB.getSelectedItem().toString();
+					boolean isRandomizedDelay = IntervalSpeedRandomDelayCheckBox.isSelected();
+					String DelayTimeInput = IntervalSpeedRandomDelayTextField.getText();
+					String DelayTimeCBSelection = IntervalSpeedRandomDelayCB.getSelectedItem().toString();
+					String MouseModeRadioButtonSelection;
 					
+					//Checks to see which of the two radio buttons is selected
+					if(selectRegionRadioButton.isSelected()) {
+						MouseModeRadioButtonSelection = selectRegionRadioButton.getText();
+					}
+					else if(ClickInPlaceRadioButton.isSelected()) {
+						MouseModeRadioButtonSelection = ClickInPlaceRadioButton.getText();
+					}
+					else {
+						MouseModeRadioButtonSelection = "";
+					}
+					
+					System.out.printf("%s\n%s\n%s\n%s\n%s\n%s\n%s\n",ClickTypeValue,
+							IntervalSpeedInput,IntervalSpeedCBTimeSelection,isRandomizedDelay,
+							DelayTimeInput,DelayTimeCBSelection,MouseModeRadioButtonSelection);
+					
+					selectRegion();
 				}
 				
 			});
 	}
 	
+	public void selectRegion() {
+		Cursor c = Cursor.getDefaultCursor();
+		Cursor c2 = new Cursor(Cursor.WAIT_CURSOR);
+		//setCursor(c2);
+		
+		/*Making Screen Transparent*/
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		TransparentFrame = new GlassFrame(screenSize);
+		TransparentFrame.addMouseListener(new MouseListener() {
+		
+			
+			@Override
+			public void mouseClicked(MouseEvent e) {
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+				//Pressed and held:
+				/*This opens up a TransparentFrame where it allows the user
+				 * to select the region that they want the mouse to randomly click within
+				 */
+				TransparentFrame.dispose();
+				TransparentFrame = null;
+				setCursor(c);
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				// TODO Auto-generated method stub
+				TransparentFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+				
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+		});
+		
+		
+	}
+	
+	
+	
+
+	public GlassFrame getTransparentFrame() {
+		return TransparentFrame;
+	}
+
+
+	public void setTransparentFrame(GlassFrame transparentFrame) {
+		TransparentFrame = transparentFrame;
+	}
+
 
 	@Override
 	public void Show() {
