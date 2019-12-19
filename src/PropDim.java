@@ -1,5 +1,7 @@
 import java.awt.Dimension;
 
+import javax.swing.JComponent;
+
 public class PropDim {
 	double width_p, height_p;
 	
@@ -46,6 +48,16 @@ public class PropDim {
 		
 		return new Dimension(new_width, new_height);
 	}
+	
+//	/**@author Miguel
+//	 * @param jc
+//	 * @param innerjc
+//	 * @param pd
+//	 * -Adds a JComponent into 
+//	 */
+//	public static void addJComponentContainer(JComponent jc, JComponent innerjc, PropDim pd) {
+//		
+//	}
 
 	public double getPorportion_width() {
 		return width_p;

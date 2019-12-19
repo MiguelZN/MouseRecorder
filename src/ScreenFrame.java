@@ -5,9 +5,11 @@ import java.awt.Dimension;
 import javax.swing.*;
 
 /*Super class reference, subclass behavior*/
+
+/*The base JFrame for the application*/
 public class ScreenFrame extends JFrame{
-	final int SCREEN_WIDTH = 1000;
-	final int SCREEN_HEIGHT = 800;
+	final int SCREEN_WIDTH = 750;
+	final int SCREEN_HEIGHT = 500;
 	final static String TITLE = "Mouse Recorder by Miguel Zavala";
 	
 	private Dimension d; //Size of the JFrame

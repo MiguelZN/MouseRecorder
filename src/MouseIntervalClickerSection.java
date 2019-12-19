@@ -5,72 +5,218 @@ import java.awt.Dimension;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.LayoutManager;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
+import javax.swing.BorderFactory;
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JTextField;
+import javax.swing.border.Border;
 
+/*RIGHT SIDE OF RECORDER SCREEN*/
 public class MouseIntervalClickerSection extends InnerPanel{
-	private JLabel label;
-	private static PropDim proportions = new PropDim(.3,1);
+	private static PropDim proportions = new PropDim(.5,1);
+	
+	/*SettingsRegionMouseInterval fields*/
+	private ArrayList<JComponent> all_components;
+	private GridBagLayout gbl;
+	
+	/*All components in settings---------------*/
+	//Header:
+		private final String HEADER_STRING = "Mouse Interval:";
+		private JLabel HeaderLabel;
+		
+	//First Row: Select Click Type 1)Left Click, 2)Right Click
+		private JLabel ClickTypeLabel;
+		private JComboBox ClickTypeCB;
+		final String[] ClickTypeCBOptions = {"Left Click", "Right Click"};
+	
+	//Second Row: Select Interval Speed: 
+		private JLabel IntervalSpeedLabel;
+		private JTextField IntervalSpeedTextField;
+		private JComboBox IntervalSpeedCB;
+		final String[] IntervalSpeedCBOptions = {"ms","seconds","minutes","hours"};
+		
+	//Third Row:
+		private JCheckBox IntervalSpeedRandomDelayCheckBox;
+		private JLabel IntervalSpeedRandomDelayLabel;
+		private JTextField IntervalSpeedRandomDelayTextField;
+		private JComboBox IntervalSpeedRandomDelayCB;
+		final String[] IntervalSpeedRandomDelayCBOptions = {"ms","seconds","minutes","hours"};
+		
+	//Fourth Row: Select click region or click where the mouse is currently at
+		private JLabel selectRegionLabel;
+		private ButtonGroup selectRegionOrClickInPlace;
+		private JRadioButton selectRegionRadioButton;
+		private JRadioButton ClickInPlaceRadioButton;
+		
+		private JButton StartButton;
+	
+	/*Proportions for the components within the Mouse Interval Settings*/
+	private final PropDim JBUTTON_PROP = new PropDim(.3,.05);
+	private final PropDim JLABEL_PROP = new PropDim(.25,.05);
+	private final PropDim JENTRY_PROP = new PropDim(.3,.05);
+	private final PropDim JTEXTFIELD_PROP = new PropDim(.15,.05);
+	private final PropDim JCOMBOBOX_PROP = new PropDim(.3,.05);
 	
 	
-	/*Select Region JPanel*/
-	private JPanel selectRegion;
-	private PropDim selectRegionProportions = new PropDim(.9,.8);
-	private Dimension selectRegionDimension;
-	
-	private JButton selectRegionButton;
-	
-	
+	/*Constructor*/
 	public MouseIntervalClickerSection(Dimension parent_d) {
 		super(parent_d, proportions);
+		gbl = new GridBagLayout();
+		this.setBorder(BorderFactory.createRaisedBevelBorder());
+		this.createMouseIntervalComponents();
+		
 		this.setBackground(Color.red);
-		
-		
-		/*Components*/
-		label = new JLabel();
-		label.setText("Mouse Interval:");
-		
-		
-		/*Select Region*/
-		selectRegion = new JPanel();
-		selectRegionDimension = PropDim.calcDimension(this.getDimension(), selectRegionProportions);
-		selectRegion.setBackground(Color.magenta);
-		selectRegion.setPreferredSize(selectRegionDimension);
-		GridBagLayout gl = new GridBagLayout(); //as many rows as needed, 2 columns
-		
-		/*Example of GridBagLayout (allows you to resize elements)
-		 * for(int i =0;i<5;i++) {
-		 
-			JButton b = new JButton("B"+i);
-			b.setPreferredSize(new Dimension(100,60));
-			//b.setSize(new Dimension(50,10));
-			selectRegion.add(b);
-			
-			JTextField jft = new JTextField("Text");
-			jft.setPreferredSize(new Dimension(100,50));
-			//jft.setSize(new Dimension(90,30));
-			selectRegion.add(jft);
-		}
-	*/
-	
-		
-		/*Adding Components to master layout*/
-		this.add(label, BorderLayout.NORTH);
-		this.add(selectRegion, BorderLayout.CENTER);
+		this.Show();
 	}
+		
+		
+	/**@author Miguel
+	 * -Uses a forloop and a switch statement to create components for the GUI
+	 * -Adds each created JCompoenent into an ArrayList<JComponent> to allow to show them
+	 * or hide them, etc or manipulate them
+	 */
+	
+	/*Features:
+	 * 1) Select Mouse Click Type
+	 * 2) Interval Speed: input how many ms,s,m
+	 * 3) Select Click Region (Rectangle area) or click where the mouse is currently
+	 * 4) Start Button with key to stop 
+	 */
+	public void createMouseIntervalComponents() {
+			//Header-------------
+			HeaderLabel = new JLabel(HEADER_STRING);
+		
+			this.add(HeaderLabel);
+			this.add(InnerPanel.createRow(this.getDimension(),true));
+			
+			//First Row: Select Mouse Click Type------------------
+			ClickTypeLabel = new JLabel("Click Type:");
+			ClickTypeLabel.setPreferredSize(PropDim.calcDimension(this.getDimension(), JLABEL_PROP));
+			ClickTypeCB = new JComboBox(ClickTypeCBOptions);
+			ClickTypeCB.setPreferredSize(PropDim.calcDimension(this.getDimension(), JCOMBOBOX_PROP));
+			
+			this.add(ClickTypeLabel);
+			this.add(ClickTypeCB);
+			this.add(InnerPanel.createRow(this.getDimension(),true));
+			
+			//Second Row: Select Interval Speed------------------
+			IntervalSpeedLabel = new JLabel("Interval Speed:");
+			IntervalSpeedTextField = new JTextField();
+			IntervalSpeedTextField.setPreferredSize(PropDim.calcDimension(this.getDimension(), JTEXTFIELD_PROP));
+			IntervalSpeedCB = new JComboBox(IntervalSpeedCBOptions);
+			IntervalSpeedCB.setPreferredSize(PropDim.calcDimension(this.getDimension(), JCOMBOBOX_PROP));
+			
+			this.add(IntervalSpeedLabel);
+			this.add(IntervalSpeedTextField);
+			this.add(IntervalSpeedCB);
+			this.add(InnerPanel.createRow(this.getDimension(),true));
+			
+			
+			
+			//Third Row:---------------------
+			IntervalSpeedRandomDelayCheckBox = new JCheckBox("Randomized Delay?");
+			IntervalSpeedRandomDelayCheckBox.setEnabled(true);
 
+			IntervalSpeedRandomDelayLabel = new JLabel("Delay Time:");
+			
+			IntervalSpeedRandomDelayTextField = new JTextField();
+			IntervalSpeedRandomDelayTextField.setEnabled(false);
+			IntervalSpeedRandomDelayTextField.setPreferredSize(PropDim.calcDimension(this.getDimension(), JTEXTFIELD_PROP));
+			IntervalSpeedRandomDelayTextField.setBackground(Color.LIGHT_GRAY);
+			
+			IntervalSpeedRandomDelayCB = new JComboBox(IntervalSpeedRandomDelayCBOptions);
+			IntervalSpeedRandomDelayCB.setEnabled(false);
+			IntervalSpeedRandomDelayCB.setPreferredSize(PropDim.calcDimension(this.getDimension(), JCOMBOBOX_PROP));
+			
+			//ActionListeners:
+				IntervalSpeedRandomDelayCheckBox.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						boolean isSelected = IntervalSpeedRandomDelayCheckBox.isSelected();
+						
+						if(isSelected) {
+							IntervalSpeedRandomDelayTextField.setEnabled(true);
+							//IntervalSpeedRandomDelayTextField.setEditable(true);
+							IntervalSpeedRandomDelayTextField.setBackground(Color.white);
+							//IntervalSpeedRandomDelayTextField.setDisabledTextColor(Color.white);
+							IntervalSpeedRandomDelayCB.setEnabled(true);
+						}
+						else {
+							IntervalSpeedRandomDelayTextField.setEnabled(false);
+							//IntervalSpeedRandomDelayTextField.setEditable(false);
+							//IntervalSpeedRandomDelayTextField.setDisabledTextColor(Color.BLACK);
+							IntervalSpeedRandomDelayTextField.setBackground(Color.LIGHT_GRAY);
+							IntervalSpeedRandomDelayTextField.setText("");
+							IntervalSpeedRandomDelayCB.setEnabled(false);
+						}
+					}
+					
+				});
+				
+				
+			
+			
+			this.add(IntervalSpeedRandomDelayCheckBox);
+			this.add(InnerPanel.createRow(this.getDimension(),.01));
+			this.add(IntervalSpeedRandomDelayLabel);
+			this.add(IntervalSpeedRandomDelayTextField);
+			this.add(IntervalSpeedRandomDelayCB);
+			this.add(InnerPanel.createRow(this.getDimension(),true));
+			
+			//Fourth Row: Select Click Region (Rectangle Area)---------
+			/*
+			 * private JLabel selectRegionLabel;
+			private JButton SelectRegion;
+			private ButtonGroup selectRegionOrClickInPlace;
+			private JRadioButton selectRegionRadioButton;
+			private JRadioButton ClickInPlaceRadioButton;
+			 */
+			
+			selectRegionLabel = new JLabel("Mouse Mode:");
+			
+			selectRegionOrClickInPlace = new ButtonGroup();
+			selectRegionRadioButton = new JRadioButton("Select Region");
+			ClickInPlaceRadioButton = new JRadioButton("ClickInPlace");
+			StartButton = new JButton("Start");
+
+			
+			selectRegionOrClickInPlace.add(selectRegionRadioButton);
+			selectRegionOrClickInPlace.add(ClickInPlaceRadioButton);
+			
+			this.add(selectRegionLabel);
+			this.add(InnerPanel.createRow(this.getDimension(),.01));
+			this.add(selectRegionRadioButton);
+			this.add(ClickInPlaceRadioButton);
+			this.add(InnerPanel.createRow(this.getDimension(),.01));
+			this.add(StartButton);
+			
+			
+			/*Action Listeners*/
+			StartButton.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					
+				}
+				
+			});
+	}
+	
 
 	@Override
 	public void Show() {
-		this.label.setVisible(true);
-		this.selectRegion.setVisible(true);
 		this.setVisible(true);
 		this.validate();
-		
-		
 	}
 
 }
