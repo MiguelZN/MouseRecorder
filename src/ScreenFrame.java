@@ -1,6 +1,8 @@
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.MouseInfo;
+import java.awt.Point;
 
 import javax.swing.*;
 
@@ -44,7 +46,17 @@ public class ScreenFrame extends JFrame{
 		
 	}
 	
-	
+	/**@author Miguel
+	 * @return Dimension
+	 * -Returns the Mouse's Current Position as a Dimension Object
+	 */
+	public static Point getCurrentMousePosn() {
+		int xposn = MouseInfo.getPointerInfo().getLocation().x;
+		int yposn = MouseInfo.getPointerInfo().getLocation().y;
+		
+		Point mouse_posn = new Point(xposn,yposn);
+		return (Point) mouse_posn;
+	}
 	
 
 	public RecorderScreen getMainScreen() {

@@ -9,7 +9,7 @@ public class Main {
 		
 		ScreenFrame MouseRecorder = new ScreenFrame();
 		
-		//Thread Loop
+//		//Thread Loop
 		Thread run = new Thread(new Runnable() {
 
 			@Override
@@ -17,13 +17,17 @@ public class Main {
 				while(i<10000) {
 					
 					try {
-						Thread.sleep(10); //10 ms
+						Thread.sleep(100); //10 ms
 						System.out.println(i);
 						
 						GlassFrame CurrentTransparentFrame= MouseRecorder.getMainScreen().getMouseIntervalSection().getTransparentFrame();
 						
 						if(CurrentTransparentFrame!=null) {
-							System.out.println("GLASS FRAME OPENED");
+							//System.out.println("GLASS FRAME OPENED");
+							CurrentTransparentFrame.validate();
+							CurrentTransparentFrame.repaint();
+							CurrentTransparentFrame.setVisible(true);
+							
 						}
 						
 					} catch (InterruptedException e) {

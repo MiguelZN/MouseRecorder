@@ -6,11 +6,14 @@ import java.awt.Dimension;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.LayoutManager;
+import java.awt.MouseInfo;
+import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
 import java.util.Timer;
 
@@ -31,8 +34,10 @@ public class MouseIntervalClickerSection extends InnerPanel{
 	private static PropDim proportions = new PropDim(.5,1);
 	
 	/*Mouse Detection, Mouse Position*/
-	GlassFrame TransparentFrame;
-	
+	private GlassFrame TransparentFrame;
+	private Point PressedMouse;
+	private Point DraggedMouse;
+
 	public enum CLICKTYPE{
 		LEFTCLICK,RIGHTCLICK;
 	}
@@ -260,11 +265,15 @@ public class MouseIntervalClickerSection extends InnerPanel{
 	public void selectRegion() {
 		Cursor c = Cursor.getDefaultCursor();
 		Cursor c2 = new Cursor(Cursor.WAIT_CURSOR);
-		//setCursor(c2);
+		
 		
 		/*Making Screen Transparent*/
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		TransparentFrame = new GlassFrame(screenSize);
+		TransparentFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+		
+		
+		
 		TransparentFrame.addMouseListener(new MouseListener() {
 		
 			
@@ -274,26 +283,33 @@ public class MouseIntervalClickerSection extends InnerPanel{
 
 			@Override
 			public void mousePressed(MouseEvent e) {
+				PressedMouse = ScreenFrame.getCurrentMousePosn();
 				
+				System.out.println("PRESSEDMOUSE:"+PressedMouse);
 			}
 
 			@Override
 			public void mouseReleased(MouseEvent e) {
-				// TODO Auto-generated method stub
-				
 				//Pressed and held:
 				/*This opens up a TransparentFrame where it allows the user
 				 * to select the region that they want the mouse to randomly click within
 				 */
-				TransparentFrame.dispose();
-				TransparentFrame = null;
+				
+				if(TransparentFrame!=null) {
+					TransparentFrame.dispose();
+					TransparentFrame = null;
+				}
+				
 				setCursor(c);
+
+				
+				System.out.println("RELEASED");
 			}
 
 			@Override
 			public void mouseEntered(MouseEvent e) {
 				// TODO Auto-generated method stub
-				TransparentFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+				//TransparentFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
 				
 			}
 
@@ -303,6 +319,23 @@ public class MouseIntervalClickerSection extends InnerPanel{
 				
 			}
 			
+		});
+		
+		TransparentFrame.addMouseMotionListener(new MouseMotionListener() {
+			
+			@Override
+			public void mouseDragged(MouseEvent e) {
+				DraggedMouse = ScreenFrame.getCurrentMousePosn();
+				TransparentFrame.updateRectangle(PressedMouse, DraggedMouse);
+			
+
+				System.out.println("DRAGGED MOUSE:"+DraggedMouse);
+			}
+
+			@Override
+			public void mouseMoved(MouseEvent e) {
+				
+			}
 		});
 		
 		
