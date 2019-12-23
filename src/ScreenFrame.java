@@ -3,6 +3,7 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.MouseInfo;
 import java.awt.Point;
+import java.awt.event.MouseEvent;
 
 import javax.swing.*;
 
@@ -53,6 +54,18 @@ public class ScreenFrame extends JFrame{
 	public static Point getCurrentMousePosn() {
 		int xposn = MouseInfo.getPointerInfo().getLocation().x;
 		int yposn = MouseInfo.getPointerInfo().getLocation().y;
+		
+		Point mouse_posn = new Point(xposn,yposn);
+		return (Point) mouse_posn;
+	}
+	
+	/**@author Miguel
+	 * @return Dimension
+	 * -Returns the Mouse's Current Position as a Dimension Object
+	 */
+	public static Point getCurrentMousePosn(MouseEvent e) {
+		int xposn = e.getX();
+		int yposn = e.getY();
 		
 		Point mouse_posn = new Point(xposn,yposn);
 		return (Point) mouse_posn;

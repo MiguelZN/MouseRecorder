@@ -15,6 +15,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.Timer;
 
 import javax.swing.BorderFactory;
@@ -78,6 +79,10 @@ public class MouseIntervalClickerSection extends InnerPanel{
 		private ButtonGroup selectRegionOrClickInPlace;
 		private JRadioButton selectRegionRadioButton;
 		private JRadioButton ClickInPlaceRadioButton;
+		
+		//Labels Displaying the Mouse's Position
+		private JLabel CurrentMousePositionLabel;
+		private JLabel SelectedRegionMousePositionLabel;
 		
 		public enum MOUSEMODE{
 			SELECTION, INPLACE;
@@ -270,7 +275,7 @@ public class MouseIntervalClickerSection extends InnerPanel{
 		/*Making Screen Transparent*/
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		TransparentFrame = new GlassFrame(screenSize);
-		TransparentFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+		//TransparentFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
 		
 		
 		
@@ -283,9 +288,10 @@ public class MouseIntervalClickerSection extends InnerPanel{
 
 			@Override
 			public void mousePressed(MouseEvent e) {
-				PressedMouse = ScreenFrame.getCurrentMousePosn();
+				PressedMouse = ScreenFrame.getCurrentMousePosn(e);
 				
 				System.out.println("PRESSEDMOUSE:"+PressedMouse);
+				System.out.println("MOUSE POSITION MOUSEEVENT:"+"x:"+e.getX()+", y:"+e.getY());
 			}
 
 			@Override
@@ -325,7 +331,7 @@ public class MouseIntervalClickerSection extends InnerPanel{
 			
 			@Override
 			public void mouseDragged(MouseEvent e) {
-				DraggedMouse = ScreenFrame.getCurrentMousePosn();
+				DraggedMouse = ScreenFrame.getCurrentMousePosn(e);
 				TransparentFrame.updateRectangle(PressedMouse, DraggedMouse);
 			
 
@@ -341,9 +347,6 @@ public class MouseIntervalClickerSection extends InnerPanel{
 		
 	}
 	
-	
-	
-
 	public GlassFrame getTransparentFrame() {
 		return TransparentFrame;
 	}
@@ -358,6 +361,30 @@ public class MouseIntervalClickerSection extends InnerPanel{
 	public void Show() {
 		this.setVisible(true);
 		this.validate();
+	}
+	
+	/*Mouse Interval Functions:*/
+	/**@author Miguel
+	 * @param TopLeftPoint
+	 * @param BottomRightPoint
+	 * @return Point [x,y]
+	 * -Given a TopLeft Point and a BottomRight Point, it generates a random point
+	 * within those constraints
+	 * NOTE: Random.nextInt(int bount) produces int [0,Bound)
+	 */
+	public static Point generateRandomPosition(Point TopLeftPoint, Point BottomRightPoint) {
+		Random rand = new Random();
+		int width = BottomRightPoint.x-TopLeftPoint.x;
+		int height = BottomRightPoint.y-TopLeftPoint.y;
+		
+		/*We get a random value from width and height and add it to TopLeftPoint's posnx, posny*/
+		int posn_x = rand.nextInt(width)+TopLeftPoint.x;
+		int posn_y = rand.nextInt(height)+TopLeftPoint.y;
+		Point random_point = new Point(posn_x,posn_y);
+		System.out.println("TOPLEFT:"+TopLeftPoint);
+		System.out.println("RANDOMPOINT:"+random_point);
+		System.out.println("BOTTOMRIGHT:"+BottomRightPoint);
+		return random_point;
 	}
 
 }

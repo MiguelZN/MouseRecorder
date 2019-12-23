@@ -1,4 +1,5 @@
 import java.awt.Dimension;
+import java.awt.Point;
 
 
 public class Main {
@@ -9,12 +10,12 @@ public class Main {
 		
 		ScreenFrame MouseRecorder = new ScreenFrame();
 		
-//		//Thread Loop
+		//Thread Loop
 		Thread run = new Thread(new Runnable() {
 
 			@Override
 			public void run() {
-				while(i<10000) {
+				while(true) {
 					
 					try {
 						Thread.sleep(100); //10 ms
@@ -41,6 +42,13 @@ public class Main {
 			
 		});
 		
+//		for(int i =0;i<500;i++) {
+//			Point rand = MouseIntervalClickerSection.generateRandomPosition(new Point(10,10), new Point(50,50));
+//			if(rand.getX()==49 /*|| rand.getX()==10*/) {
+//				//System.exit(0);
+//			}
+//			System.out.println();
+//		}
 		run.run();
 	}
 }
