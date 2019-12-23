@@ -9,6 +9,7 @@ import java.awt.LayoutManager;
 import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.Toolkit;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -82,7 +83,10 @@ public class MouseIntervalClickerSection extends InnerPanel{
 		
 		//Labels Displaying the Mouse's Position
 		private JLabel CurrentMousePositionLabel;
+		static final String CurrentMousePositionString = "Current Mouse X,Y:";
 		private JLabel SelectedRegionMousePositionLabel;
+		static final String SelectedRegionMousePositionString = "Selected Region From (%s,%s) to (%s,%s)";
+		
 		
 		public enum MOUSEMODE{
 			SELECTION, INPLACE;
@@ -113,9 +117,6 @@ public class MouseIntervalClickerSection extends InnerPanel{
 		
 		
 	/**@author Miguel
-	 * -Uses a forloop and a switch statement to create components for the GUI
-	 * -Adds each created JCompoenent into an ArrayList<JComponent> to allow to show them
-	 * or hide them, etc or manipulate them
 	 */
 	
 	/*Features:
@@ -222,7 +223,34 @@ public class MouseIntervalClickerSection extends InnerPanel{
 			this.add(selectRegionRadioButton);
 			this.add(ClickInPlaceRadioButton);
 			this.add(InnerPanel.createRow(this.getDimension(),.01));
+			
+			
+			//Mouse Position Labels:
+			CurrentMousePositionLabel = new JLabel(); //Current Mouse X,Y:
+			SelectedRegionMousePositionLabel = new JLabel(); //Selected Region:
+			this.add(CurrentMousePositionLabel);
+			this.add(InnerPanel.createRow(this.getDimension(),.01));
+			this.add(SelectedRegionMousePositionLabel);
+			this.add(InnerPanel.createRow(this.getDimension(),.01));
+			
+//			this.addMouseMotionListener(new MouseMotionListener() {
+//				@Override
+//				public void mouseDragged(MouseEvent e) {
+//				}
+//
+//				@Override
+//				public void mouseMoved(MouseEvent e) {
+//					//Current Mouse Position:
+//					int current_x = e.getX();
+//					int current_y = e.getY();
+//					CurrentMousePositionLabel.setText(CurrentMousePositionString+"("+current_x+","+current_y+")");
+//				}
+//				
+//			});
+			
 			this.add(StartButton);
+			
+			
 			
 			
 			
@@ -288,7 +316,7 @@ public class MouseIntervalClickerSection extends InnerPanel{
 
 			@Override
 			public void mousePressed(MouseEvent e) {
-				PressedMouse = ScreenFrame.getCurrentMousePosn(e);
+				PressedMouse = ScreenFrame.getCurrentMousePosnRelative(e);
 				
 				System.out.println("PRESSEDMOUSE:"+PressedMouse);
 				System.out.println("MOUSE POSITION MOUSEEVENT:"+"x:"+e.getX()+", y:"+e.getY());
@@ -331,7 +359,7 @@ public class MouseIntervalClickerSection extends InnerPanel{
 			
 			@Override
 			public void mouseDragged(MouseEvent e) {
-				DraggedMouse = ScreenFrame.getCurrentMousePosn(e);
+				DraggedMouse = ScreenFrame.getCurrentMousePosnRelative(e);
 				TransparentFrame.updateRectangle(PressedMouse, DraggedMouse);
 			
 
@@ -340,7 +368,6 @@ public class MouseIntervalClickerSection extends InnerPanel{
 
 			@Override
 			public void mouseMoved(MouseEvent e) {
-				
 			}
 		});
 		
@@ -354,6 +381,18 @@ public class MouseIntervalClickerSection extends InnerPanel{
 
 	public void setTransparentFrame(GlassFrame transparentFrame) {
 		TransparentFrame = transparentFrame;
+	}
+	
+	
+
+
+	public JLabel getCurrentMousePositionLabel() {
+		return CurrentMousePositionLabel;
+	}
+
+
+	public JLabel getSelectedRegionMousePositionLabel() {
+		return SelectedRegionMousePositionLabel;
 	}
 
 

@@ -16,6 +16,7 @@ public class GlassFrame extends JFrame{
 		this.setPreferredSize(d);
 		this.setSize(d);
 		this.setUndecorated(true);
+		//this.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		this.setBackground(TRANSPARENT);
 		
 		this.add(new Canvas(d));
